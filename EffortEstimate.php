@@ -1,11 +1,11 @@
 <?php 
 
-class EffortPlugin extends MantisPlugin
+class EffortEstimatePlugin extends MantisPlugin
 {
 	public function register()
 	{
-		$this->name = 'Effort';
-		$this->description = 'Effort plugin allows you to estimate the effort on the issues';
+		$this->name = 'EffortEstimate';
+		$this->description = 'Effort estimate plugin allows you to estimate the effort on the issues';
 		$this->page = '';
 
 		$this->version = '1.0.1';
