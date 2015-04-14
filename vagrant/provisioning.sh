@@ -25,8 +25,14 @@ rm index.html
 
 git clone --recursive  https://github.com/mantisbt/mantisbt.git
 cd mantisbt
+git checkout release-1.2.19 -f
+git submodule update --init --recursive
+
 chown www-data.vagrant /var/www/mantisbt -R
 chmod 777 /var/www/mantisbt/config
+
+cd plugins
+ln -s ../../EffortEstimate
 
 cp /var/www/EffortEstimate/vagrant/vhost /etc/apache2/sites-available/mantisbt
 

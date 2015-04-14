@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 class EffortEstimatePlugin extends MantisPlugin
 {
@@ -18,19 +18,35 @@ class EffortEstimatePlugin extends MantisPlugin
 
 	public function hooks()
 	{
-		return array('EVENT_VIEW_BUG_DETAILS' => 'EffortDetails');
+		return array(
+            'EVENT_VIEW_BUG_DETAILS' => 'EffortDetails',
+            'EVENT_REPORT_BUG_FORM' => 'EffortForm',
+            'EVENT_UPDATE_BUG_FORM' => 'EfforForm',
+            'EVENT_REPORT_BUG' => 'SetEffort'
+        );
 	}
 
-	public function EffortDetails($p_event, $p_bug_id)
+	public function EffortDetails($event, $bug)
 	{
-		HtmlHelper::viewEffortEstimate($p_bug_id);
+        $controller = new EffortEstimate\Controller\DetailController(array('bug' => $bug));
+        $controller->executeAction();
 	}
 
-	public function init() 
+    public function EffortForm($event, $bug)
 	{
-		$t_path = config_get_global('plugin_path' ). plugin_get_current() . DIRECTORY_SEPARATOR . 'core' . DIRECTORY_SEPARATOR;
-		set_include_path(get_include_path() . PATH_SEPARATOR . $t_path);
-		require_once( 'HtmlHelper.php' );
+        $controller = new EffortEstimate\Controller\DetailController();
+        $controller->formAction();
+	}
+
+    public function SetEffort($event, $bug)
+	{
+        $controller = new EffortEstimate\Controller\DetailController(array('bug' => $bug));
+        $controller->setAction();
+	}
+
+	public function init()
+	{
+        include __DIR__ . '/src/EffortEstimate/Controller/DetailController.php';
 	}
 
 	public function schema()
@@ -42,8 +58,8 @@ class EffortEstimatePlugin extends MantisPlugin
 					plugin_table('efforts'),
 					'id I NOTNULL UNSIGNED AUTOINCREMENT PRIMARY,
 					bug_id I DEFAULT NULL UNSIGNED,
-					user_id I DEFAULT NULL UNSIGNED
-					effort_estimate F(15, 3) DEFAULT NULL,
+					user_id I DEFAULT NULL UNSIGNED,
+					effort_estimate F(15,3) DEFAULT NULL,
 					timestamp T DEFAULT NULL'
 				)
 			)
